@@ -316,35 +316,4 @@ function printGraph() {
     // initialize your network!
     var network = new vis.Network(container, data, options);
 }
-/*
-data[0] = [];
-data[0]["name"] = "A";
-data[0]["precesors"] = "";
-data[0]["value"] = 3;
-data[1] = [];
-data[1]["name"] = "B";
-data[1]["precesors"] = "A";
-data[1]["value"] = 3;
-data[2] = [];
-data[2]["name"] = "C";
-data[2]["precesors"] = "A";
-data[2]["value"] = 7;
-data[3] = [];
-data[3]["name"] = "D";
-data[3]["precesors"] = "C";
-data[3]["value"] = 2;
-data[4] = [];
-data[4]["name"] = "E";
-data[4]["precesors"] = "B,D";
-data[4]["value"] = 4;
-data[5] = [];
-data[5]["name"] = "F";
-data[5]["precesors"] = "D";
-data[5]["value"] = 3;
-data[6] = [];
-data[6]["name"] = "G";
-data[6]["precesors"] = "E,F";
-data[6]["value"] = 7;
-graph.addNodes(data);
-*/
 
