@@ -107,8 +107,28 @@ class Graph {
     }
 
     calculateLate() {
-        for (var i = 0; i < this.nodesList.length; i++) {
-            //AQUI VAMOS
+        for (var i = this.nodesList.length - 1; i >= 0; i--) {
+
+            if (this.nodesList[i].sucesors.length == 1) {
+                this.nodesList[i].endLate = this.nodesList[i].sucesors[0].startLate;
+                this.nodesList[i].startLate = this.nodesList[i].endLate - this.nodesList[i].time;
+                this.nodesList[i].slack = this.nodesList[i].endLate - this.nodesList[i].endEarly;
+            } else {
+                var min = Number.MAX_SAFE_INTEGER;
+                var pos = null;
+                for (var j = 0; j < this.nodesList[i].sucesors.length; j++) {
+                    if (this.nodesList[i].sucesors[j].startLate < min) {
+                        min = this.nodesList[i].sucesors[j].startLate;
+                        pos = j;
+                    }
+                }
+                if (pos != null) {
+                    this.nodesList[i].endLate = this.nodesList[i].sucesors[pos].startLate;
+                    this.nodesList[i].startLate = this.nodesList[i].endLate - this.nodesList[i].time;
+                    this.nodesList[i].slack = this.nodesList[i].endLate - this.nodesList[i].endEarly;
+                }
+            }
+
         }
     }
 
@@ -142,6 +162,23 @@ class Graph {
         }
 
         return matrix;
+    }
+
+    getCriticalRoute(node, route) {
+
+        if (node == this.end) {
+            return route;
+        } else {
+            for (var i = 0; i < node.sucesors.length; i++) {
+                if (node.sucesors[i].slack == 0) {
+                    route += node.sucesors[i].name + "-";
+
+                    return this.getCriticalRoute(node.sucesors[i], route);
+                    //break;
+                }
+            }
+
+        }
     }
 
     reset() {
@@ -202,6 +239,13 @@ function processIniTable() {
     graph.setEdges();
     graph.calculateEarly();
     graph.calculateLate();
+    var route = graph.getCriticalRoute(graph.start, "").split("-");
+    var routeString = "";
+    for (var i = 0; i < route.length - 2; i++) {
+        routeString += route[i] + " ";
+    }
+
+    console.log(routeString);
 
     //console.log(graph.start);
     //console.log(graph.nodesList);
