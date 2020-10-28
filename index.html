@@ -25,15 +25,16 @@
                 <div class="col-sm-12 col-md-4 col-lg-2">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="name">Actividad</label><br>
+                            <label for="name">Actividad</label>
                             <input type="text" id="name" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="precesors">Predecesores</label><br>
+                            <label for="precesors">Predecesores</label>
                             <input type="text" id="precesors" class="form-control">
+                            <small>Separados por comas y sin espacios</small>
                         </div>
                         <div class="form-group">
-                            <label for="time">Duración</label><br>
+                            <label for="time">Duración</label>
                             <input type="number" id="time" class="form-control" min="1" step="1">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="setDataRow()">Añadir a la tabla</button>
@@ -80,6 +81,10 @@
 
                     </tbody>
                 </table>
+            </div>
+            <div class="mx-4 mb-4">
+                <h5>Ruta crítica</h5>
+                <p id="criticRoute"></p>
             </div>
             <small class="mx-4 my-2">Puede arrastrar los nodos para reacomodarlos</small>
             <div id="mynetwork" class="mx-4 mb-4"></div>

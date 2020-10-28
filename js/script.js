@@ -174,7 +174,6 @@ class Graph {
                     route += node.sucesors[i].name + "-";
 
                     return this.getCriticalRoute(node.sucesors[i], route);
-                    //break;
                 }
             }
 
@@ -242,14 +241,11 @@ function processIniTable() {
     var route = graph.getCriticalRoute(graph.start, "").split("-");
     var routeString = "";
     for (var i = 0; i < route.length - 2; i++) {
-        routeString += route[i] + " ";
+        routeString += '<span class="badge badge-pill badge-success">Actividad '+route[i]+'</span> '+(i<route.length - 3?' -> ':'');
     }
 
-    console.log(routeString);
-
-    //console.log(graph.start);
-    //console.log(graph.nodesList);
-    //console.log(graph.end);
+    $('#criticRoute').html(routeString);
+    
     printFinalTable()
 }
 
@@ -288,10 +284,10 @@ function printGraph() {
                 "Actividad " + matrix[i]["name"] + "\n\n" +
                 "Duración: " + matrix[i]["time"] + "\n" +
                 "Holgura: " + matrix[i]["slack"] + "\n" +
-                "Inicio Temprano: " + matrix[i]["startEarly"] + "\n" +
-                "Inicio Tardio: " + matrix[i]["startLate"] + "\n" +
-                "Fin Temprano: " + matrix[i]["endEarly"] + "\n" +
-                "Fin Tardio: " + matrix[i]["endLate"]
+                "Inicio temprano: " + matrix[i]["startEarly"] + "\n" +
+                "Inicio tardio: " + matrix[i]["startLate"] + "\n" +
+                "Fin temprano: " + matrix[i]["endEarly"] + "\n" +
+                "Fin tardio: " + matrix[i]["endLate"]
         });
     }
     nodes.push({
@@ -304,10 +300,10 @@ function printGraph() {
         id: graph.end.name,
         label:
             graph.end.name + "\n\n" +
-            "Inicio Temprano: " + graph.end.startEarly + "\n" +
-            "Inicio Tardio: " + graph.end.startLate + "\n" +
-            "Fin Temprano: " + graph.end.endEarly + "\n" +
-            "Fin Tardio: " + graph.end.endLate,
+            "Inicio temprano: " + graph.end.startEarly + "\n" +
+            "Inicio tardio: " + graph.end.startLate + "\n" +
+            "Fin temprano: " + graph.end.endEarly + "\n" +
+            "Fin tardio: " + graph.end.endLate,
         color: { background: '#dc3545' },
         level: 3,
     });
