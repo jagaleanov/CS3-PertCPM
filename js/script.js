@@ -38,7 +38,6 @@ class Graph {
     }
 
     addNodes(data) {
-        //console.log(data);
         for (var i = 0; i < data.length; i++) {
             this.nodesList.push(new Node(data[i]["name"], data[i]["precesors"].split(","), data[i]["time"]));
         }
@@ -91,8 +90,7 @@ class Graph {
         }
 
         if (this.end.precesors.length == 1) {
-            this.end.startEarly = this.end.precesors[0].endEarly;
-            this.end.endEarly = this.end.startEarly + this.end.time;
+            this.end.endLate = this.end.startLate = this.end.endEarly = this.end.startEarly = this.end.precesors[0].endEarly;
         } else {
             var max = 0;
             var pos = null;
@@ -103,8 +101,7 @@ class Graph {
                 }
             }
             if (pos != null) {
-                this.end.startEarly = this.end.precesors[pos].endEarly;
-                this.end.endEarly = this.end.startEarly + this.end.time;
+                this.end.endLate = this.end.startLate = this.end.endEarly = this.end.startEarly = this.end.precesors[pos].endEarly;
             }
         }
     }
@@ -126,8 +123,14 @@ class Graph {
                 precesorsTemp.push(this.nodesList[i].precesors[j].name);
             }
 
+            var sucesorsTemp = [];
+            for (var j = 0; j < this.nodesList[i].sucesors.length; j++) {
+                sucesorsTemp.push(this.nodesList[i].sucesors[j].name);
+            }
+
             row["name"] = this.nodesList[i].name;
             row["precesors"] = precesorsTemp.join(",");
+            row["sucesors"] = sucesorsTemp.join(",");
             row["time"] = this.nodesList[i].time;
             row["slack"] = this.nodesList[i].slack;
             row["startEarly"] = this.nodesList[i].startEarly;
@@ -151,16 +154,35 @@ class Graph {
 var graph = new Graph();
 var dataTable = [];
 
+function issetRow(name) {
+    for (var i = 0; i < dataTable.length; i++) {
+        if (dataTable[i]["name"] == name) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function setDataRow() {
-    var row = [];
-    row["name"] = $('#name').val();
-    row["precesors"] = $('#precesors').val();
-    row["time"] = parseInt($('#time').val());
-    dataTable.push(row);
-    $('#name').val("");
-    $('#precesors').val("");
-    $('#time').val("");
-    printIniTable();
+
+    if ($('#name').val() != "" && $('#time').val() != "") {
+        if (!issetRow($('#name').val())) {
+            var row = [];
+            row["name"] = $('#name').val();
+            row["precesors"] = $('#precesors').val();
+            row["time"] = parseInt($('#time').val());
+            dataTable.push(row);
+            $('#name').val("");
+            $('#precesors').val("");
+            $('#time').val("");
+            printIniTable();
+        } else {
+            alert("La actividad " + $('#name').val() + " ya existe");
+        }
+    } else {
+        alert("Datos incompletos");
+    }
+
 }
 
 function printIniTable() {
@@ -179,6 +201,7 @@ function processIniTable() {
     graph.addNodes(dataTable);
     graph.setEdges();
     graph.calculateEarly();
+    graph.calculateLate();
 
     //console.log(graph.start);
     //console.log(graph.nodesList);
@@ -193,6 +216,7 @@ function printFinalTable() {
         var string =
             "<td>" + matrix[i]["name"] + "</td>" +
             "<td>" + matrix[i]["precesors"] + "</td>" +
+            "<td>" + matrix[i]["sucesors"] + "</td>" +
             "<td>" + matrix[i]["time"] + "</td>" +
             "<td>" + matrix[i]["slack"] + "</td>" +
             "<td>" + matrix[i]["startEarly"] + "</td>" +
@@ -217,25 +241,30 @@ function printGraph() {
             id: matrix[i]["name"],
             level: 2,
             label:
-                "Actividad " + matrix[i]["name"] + "\n" +
-                "Duración:" + matrix[i]["time"] + "\n" +
-                "Holgura:" + matrix[i]["slack"] + "\n" +
-                "Inicio Temprano:" + matrix[i]["startEarly"] + "\n" +
-                "Inicio Tardio:" + matrix[i]["startLate"] + "\n" +
-                "Fin Temprano:" + matrix[i]["endEarly"] + "\n" +
-                "Fin Tardio:" + matrix[i]["endLate"]
+                "Actividad " + matrix[i]["name"] + "\n\n" +
+                "Duración: " + matrix[i]["time"] + "\n" +
+                "Holgura: " + matrix[i]["slack"] + "\n" +
+                "Inicio Temprano: " + matrix[i]["startEarly"] + "\n" +
+                "Inicio Tardio: " + matrix[i]["startLate"] + "\n" +
+                "Fin Temprano: " + matrix[i]["endEarly"] + "\n" +
+                "Fin Tardio: " + matrix[i]["endLate"]
         });
     }
     nodes.push({
         id: graph.start.name,
         label: graph.start.name,
-        color: { background: '#631919' },
+        color: { background: '#dc3545' },
         level: 1,
     });
     nodes.push({
         id: graph.end.name,
-        label: graph.end.name,
-        color: { background: '#631919' },
+        label:
+            graph.end.name + "\n\n" +
+            "Inicio Temprano: " + graph.end.startEarly + "\n" +
+            "Inicio Tardio: " + graph.end.startLate + "\n" +
+            "Fin Temprano: " + graph.end.endEarly + "\n" +
+            "Fin Tardio: " + graph.end.endLate,
+        color: { background: '#dc3545' },
         level: 3,
     });
     nodes = new vis.DataSet(nodes);
@@ -277,11 +306,11 @@ function printGraph() {
             }
         },
         nodes: {
-            shape: 'database',
+            shape: 'box',
             physics: false,
             color: {
                 border: '#007bff',
-                background: '#19631C',
+                background: '#28a745',
             },
             font: {
                 color: '#ffffff',

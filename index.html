@@ -34,14 +34,14 @@
                         </div>
                         <div class="form-group">
                             <label for="time">Duración</label><br>
-                            <input type="text" id="time" class="form-control">
+                            <input type="number" id="time" class="form-control" min="1" step="1">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="setDataRow()">Añadir a la tabla</button>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-8 col-lg-10">
                     <div class="card-body">
-                        <table class="table table-hover">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th scope="col">Actividad</th>
@@ -62,11 +62,12 @@
         <div class="card mx-4 mt-3">
             <h5 class="m-3">Valores de salida</h5>
             <div class="card-body">
-                <table class="table table-hover">
+                <table class="table table-sm table-hover">
                     <thead>
                         <tr>
                             <th scope="col">Actividad</th>
                             <th scope="col">Predecesores </th>
+                            <th scope="col">Sucesores </th>
                             <th scope="col">Duración</th>
                             <th scope="col">Holgura</th>
                             <th scope="col">Inicio temprano</th>
